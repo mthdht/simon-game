@@ -13,7 +13,9 @@
                 :color="color"
                 :difficulty-class="difficultyClass"
                 :button-locked-class="buttonLockedClass"
+                @button-pressed="handleButton"
             />
+            <p style="width: 100%;" class="w3-center"><b>{{ indication }}</b></p>
         </div>
     </div>
 </template>
@@ -35,7 +37,8 @@
                 difficulty: 4,
                 sequence: [],
                 userSequence: [],
-                buttonLocked: true
+                buttonLocked: true,
+                indication: "Appui sur START pour commencer !!!"
             }
         },
 
@@ -57,6 +60,7 @@
             },
 
             begin: function () {
+                this.indication = "Regarde bien la sequence !!!";
                 this.makeSequence(this.level);
                 this.showSequence();
             },
@@ -86,8 +90,14 @@
                     if (i === this.level + 3) {
                         clearInterval(interval);
                         this.level++;
+                        this.buttonLocked = !this.buttonLocked;
+                        this.indication = "A toi de jouer !!!"
                     }
                 }, 1400)
+            },
+
+            handleButton: function (event) {
+                console.log(event);
             }
         }
     }

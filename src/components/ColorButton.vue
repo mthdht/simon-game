@@ -1,6 +1,6 @@
 <template>
     <div class="button-container" :class="[difficultyClass]">
-        <button class="button w3-btn w3-ripple" :class="[colorClass, buttonLockedClass]"></button>
+        <button class="button w3-btn w3-ripple" :class="[colorClass, buttonLockedClass]" @click="$emit('button-pressed', $event)"></button>
     </div>
 </template>
 
