@@ -1,13 +1,13 @@
 <template>
     <div class="button-container" :class="[difficultyClass]">
-        <button class="button w3-btn w3-ripple" :class="[colorClass, buttonLockedClass]" @click="$emit('button-pressed', $event)"></button>
+        <button class="button w3-btn w3-ripple" :class="[colorClass, buttonLockedClass]" @click="$emit('button-pressed', $event, color, index)"></button>
     </div>
 </template>
 
 <script>
     export default {
         name: "ColorButton",
-        props: ['color', 'difficultyClass', 'buttonLockedClass'],
+        props: ['color', 'difficultyClass', 'buttonLockedClass', 'index'],
         computed: {
             colorClass: function () {
                 return "w3-" + this.color;

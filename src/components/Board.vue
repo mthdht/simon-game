@@ -2,7 +2,7 @@
     <div class="">
         <div class="controls w3-blue-gray w3-center w3-padding-24">
             <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue w3-margin-right"><b>{{ difficultyName }}</b></button>
-            <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue" @click="begin"><b>Start</b></button>
+            <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue" :class="startLockedClass" @click="begin"><b>Start</b></button>
         </div>
 
         <div class="board w3-padding-24">
@@ -11,6 +11,7 @@
                 v-for="(color, index) in colors"
                 :key="index + 1"
                 :color="color"
+                :index="index"
                 :difficulty-class="difficultyClass"
                 :button-locked-class="buttonLockedClass"
                 @button-pressed="handleButton"
@@ -38,6 +39,7 @@
                 sequence: [],
                 userSequence: [],
                 buttonLocked: true,
+                startLocked: false,
                 indication: "Appui sur START pour commencer !!!"
             }
         },
@@ -50,7 +52,10 @@
                 return this.difficulty === 4 ? "easy" : this.difficulty === 6 ? "medium": "hard";
             },
             buttonLockedClass: function () {
-                return this.buttonLocked ? "locked" : ""
+                return this.buttonLocked ? "locked" : "";
+            },
+            startLockedClass: function () {
+                return this.startLocked ? "locked" : "";
             }
         },
 
@@ -60,9 +65,13 @@
             },
 
             begin: function () {
-                this.indication = "Regarde bien la sequence !!!";
-                this.makeSequence(this.level);
-                this.showSequence();
+                if (!this.startLocked) {
+                    this.buttonLocked = true;
+                    this.startLocked = true;
+                    this.indication = "Regarde bien la sequence !!!";
+                    this.makeSequence(this.level);
+                    this.showSequence();
+                }
             },
 
             makeSequence: function (level) {
@@ -75,7 +84,6 @@
                     let random = Math.floor(Math.random() * this.difficulty);
                     this.sequence.push([this.colors[random], random]);
                 }
-                console.log(this.sequence);
             },
 
             showSequence: function () {
@@ -83,21 +91,52 @@
                 let interval = setInterval(() => {
                     let button = document.getElementsByClassName("button-container")[this.sequence[i][1]];
                     button.classList.toggle("w3-opacity");
+                    button.classList.toggle("w3-card");
                     setTimeout(() => {
                         button.classList.toggle("w3-opacity");
+                        button.classList.toggle("w3-card");
                     }, 700);
                     i++;
                     if (i === this.level + 3) {
                         clearInterval(interval);
-                        this.level++;
-                        this.buttonLocked = !this.buttonLocked;
+                        this.buttonLocked = false;
                         this.indication = "A toi de jouer !!!"
                     }
                 }, 1400)
             },
 
-            handleButton: function (event) {
-                console.log(event);
+            handleButton: function (event, color, index) {
+                if (!this.buttonLocked && this.sequence.length > this.userSequence.length) {
+                    this.userSequence.push([color, index]);
+
+                    if (this.sequence.length === this.userSequence.length) {
+                        this.compareSequences();
+                    }
+                }
+            },
+
+            compareSequences: function () {
+                if (this.sequence.toString() == this.userSequence.toString()) {
+                    this.level++;
+                    this.userSequence = [];
+                    this.indication = "Felicitation !! tu es au niveau " + this.level + ", appuie sur START pour continuer!";
+                    this.score += (this.level + 3) * this.difficulty;
+                    this.buttonLocked = true;
+                    this.startLocked = false;
+                } else {
+                    this.indication = "Perdu, ton score: " + this.score + ". Recommence en appuyant sur START !!!";
+                    this.reset();
+                }
+
+            },
+
+            reset: function () {
+                this.sequence = [];
+                this.level = 1;
+                this.userSequence = [];
+                this.score = 0;
+                this.buttonLocked = true;
+                this.startLocked = false;
             }
         }
     }
@@ -109,6 +148,10 @@
         justify-content: center;
         flex-wrap: wrap;
         margin: auto;
+    }
+
+    .locked {
+        cursor: not-allowed;
     }
 
     @media (min-width: 550px) {
