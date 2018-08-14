@@ -1,17 +1,17 @@
 <template>
-    <div class="button-container hard">
-        <button class="button w3-btn w3-ripple " :class="colorClass"></button>
+    <div class="button-container" :class="[difficultyClass]">
+        <button class="button w3-btn w3-ripple" :class="[colorClass, buttonLockedClass]"></button>
     </div>
 </template>
 
 <script>
     export default {
         name: "ColorButton",
-        props: ['color'],
+        props: ['color', 'difficultyClass', 'buttonLockedClass'],
         computed: {
             colorClass: function () {
                 return "w3-" + this.color;
-            }
+            },
         }
     }
 </script>
@@ -32,11 +32,14 @@
         padding: 5px;
     }
 
+    .locked {
+        cursor: not-allowed;
+    }
+
     .button {
         width: 100%;
         padding-top: 100%;
         border: none;
-        cursor: pointer;
     }
 
     @media (min-width: 550px) {
