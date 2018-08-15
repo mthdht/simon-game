@@ -1,8 +1,20 @@
 <template>
     <div class="">
         <div class="controls w3-blue-gray w3-center w3-padding-24">
-            <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue w3-margin-right"><b>{{ difficultyName }}</b></button>
+            <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue w3-margin-right" @click="showModal"><b>{{ difficultyName }}</b></button>
             <button class="w3-button w3-round-xxlarge w3-large w3-green w3-hover-blue" :class="startLockedClass" @click="begin"><b>Start</b></button>
+
+            <div id="confirm-change-difficulty" class="w3-modal">
+                <div class="w3-modal-content w3-padding-24">
+                    <div class="w3-container">
+                        <p class="w3-panel w3-text-dark-gray w3-large">
+                            Attention, en changeant de difficulté, ton score repassera à zero et le level à 1!!
+                        </p>
+                        <button class="w3-button w3-green w3-hover-opacity w3-margin-right" @click="changeDifficulty">Continuer</button>
+                        <button class="w3-button w3-red" onclick="document.getElementById('confirm-change-difficulty').style.display='none'">Annuler</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="board w3-padding-24">
@@ -14,7 +26,7 @@
                 :index="index"
                 :difficulty-class="difficultyClass"
                 :button-locked-class="buttonLockedClass"
-                @button-pressed="handleButton"
+                @button-pressed="handleColorButton"
             />
             <p style="width: 100%;" class="w3-center"><b>{{ indication }}</b></p>
         </div>
@@ -105,7 +117,7 @@
                 }, 1400)
             },
 
-            handleButton: function (event, color, index) {
+            handleColorButton: function (event, color, index) {
                 if (!this.buttonLocked && this.sequence.length > this.userSequence.length) {
                     this.userSequence.push([color, index]);
 
@@ -137,6 +149,17 @@
                 this.score = 0;
                 this.buttonLocked = true;
                 this.startLocked = false;
+            },
+
+            showModal: function () {
+                document.getElementById('confirm-change-difficulty').style.display='block'
+            },
+
+            changeDifficulty: function () {
+                document.getElementById('confirm-change-difficulty').style.display='none'
+                this.difficulty = this.difficulty === 4 ? 6 : this.difficulty === 6 ? 9 : 4;
+                this.colors = this.getColors(this.difficulty);
+                this.reset();
             }
         }
     }

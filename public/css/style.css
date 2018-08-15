@@ -10,6 +10,11 @@ nav {
     display: flex;
 }
 
+.navigation-links a {
+    display: flex;
+    align-items: center;
+}
+
 
 @media (min-width: 768px) {
     nav {
