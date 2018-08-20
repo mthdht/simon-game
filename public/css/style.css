@@ -1,0 +1,23 @@
+
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.navigation-links {
+    display: flex;
+}
+
+.navigation-links a {
+    display: flex;
+    align-items: center;
+}
+
+
+@media (min-width: 768px) {
+    nav {
+        justify-content: space-between;
+    }
+}
